@@ -1,0 +1,34 @@
+
+div{
+    text-align: justify;
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
+div.conferenceLabel, div.dissTitle{
+    font-size: 1.8em;
+}
+
+div.conferenceStart, div.conferenceEnd, div.dissDate, div.conferenceDates{
+    font-family: "Courier New", monospace;
+}
+
+div.conferenceRegistrationDeadline, div.dissReviewer, div.dissAffiliates {
+    font-size: 0.9em;
+}
+
+div.dissCreator, div.conferenceLocation{
+    font-weight: bold;
+}
+
+div.conferenceDescription{
+    font-style: italic;
+}
+
+div.dissAffiliates{
+    color: grey;
+    font-family: "Courier New", monospace;
+}
+

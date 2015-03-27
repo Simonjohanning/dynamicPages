@@ -1,0 +1,26 @@
+{
+  "name": "jassa-ui-angular-edit",
+  "version": "0.9.0-SNAPSHOT",
+  "main": [
+    "jassa-ui-angular-edit-tpls.js",
+    "jassa-ui-angular-edit.css"
+  ],
+  "dependencies": {
+    "jassa-ui-angular": "0.9.0-SNAPSHOT",
+    "dddi-angular": "1.0.0",
+    "angular-ui-select": "0.9.9",
+    "selectize": "~0.8.5",
+    "angular-ui-utils": "",
+    "moment": "2.8.4"
+  },
+  "homepage": "https://github.com/GeoKnow/Jassa-UI-Angular-Edit-Bower",
+  "_release": "0.9.0-SNAPSHOT",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.0-SNAPSHOT",
+    "commit": "0599de456efbfe9a687b760b79c3c34340551519"
+  },
+  "_source": "git://github.com/GeoKnow/Jassa-UI-Angular-Edit-Bower.git",
+  "_target": "0.9.0-SNAPSHOT",
+  "_originalSource": "jassa-ui-angular-edit"
+}

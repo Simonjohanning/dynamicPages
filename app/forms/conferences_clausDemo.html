@@ -1,0 +1,62 @@
+<div
+    class="row"
+    ng-init="data={}; data.baseIri='data:'; data.dists=[]"
+    rex-context
+    rex-sparql-service="datasetSparqlService"
+    rex-prefix="'sd: http://symbolicdata.org/Data/Model# cc: http://creativecommons.org/ns# ical: http://www.w3.org/2002/12/cal/ical# dcterms: http://purl.org/dc/terms/ rdfs: http://www.w3.org/2000/01/rdf-schema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
+    rex-lookup="true">
+
+
+	<input type="text" ng-model="ls.ctrl.filter.concept" />
+
+	<ul>
+		<li ng-repeat="item in ls.state.items" rex-subject="item.id">
+			<div >
+				<input type="text" class="conferenceTitle" rex-predicate="'rdfs:label'" rex-literal="conferenceTitle" ng-model="conferenceTitle" />
+			</div>
+			<ul rex-nav-predicate="'sd:hasOrganizers'" rex-nav-targets="targets">
+				<li ng-repeat="organizer in targets" rex-subject="organizer">{{organizer}}
+				    <input type="text" class="conferenceTitle" rex-predicate="'foaf:name'" rex-literal="sss" ng-model="sss" />
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<textarea>
+		{{graphToTurtle(rexContext.graph, rexPrefixMapping)}}
+	</textarea>
+</div>
+
+
+
+<!--
+<div rex-subject="foo" >
+	<div class="conferenceTitle" rex-property="'rdfs:label'" rex-literal="'conferenceTitle'">{{conferenceTitle}}</div>
+	<span class="conferenceDates" rex-property="'ical:dtstart'" rex-literal="'startDate'"><span ng-if="startDate != null">from {{startDate}}</span>
+	<span class="conferenceDates" rex-property="'ical:dtend'" rex-literal="'endDate'"><span ng-if="endDate != null">to {{endDate}}</span>
+	<span class="location" rex-property="'ical:location'" rex-literal="'location'"><span ng-if="location != null">in {{location}}</span>
+	<span class="description" rex-property="'ical:description'" rex-literal="'description'"><span ng-if="description != null">{{description}}</span>
+	<span class="registrationDeadline" rex-property="'sd:hasRegistrationDeadline'" rex-literal="'registrationDeadline'"><span ng-if="registrationDeadline != null">register until {{registrationDeadline}}</span>
+	<span class="posterDeadline" rex-property="'sd:hasPosterDeadline'" rex-literal="'posterDeadline'"><span ng-if="posterDeadline != null">poster deadline: {{posterDeadline}}</span>
+	<div ng-if="organizers.length > 0" ng-repeat="organizer in organizers">
+		Organized by:
+		<span class="organizer" rex-property="'sd:hasOrganizers'" rex-literal="'organizer'"><span ng-if="organizer != null">{{organizer}}</span>
+
+
+Further attributes:
+
+    cc:license
+    cc:attributionURL
+    cc:attributionName
+    sd:hasAbstractsDeadline
+    sd:hasPaperDeadline
+    ical:contact
+    ical:url
+    dcterms:source
+    sd:hasParticipants
+    sd:invitedSpeakers
+    rdfs:comment
+    rdfs:subClassOf
+    dcterms:subject
+    sd:hasProgramCommittee
+
+see http://symbolicdata.org/casn/resource/instances -->
