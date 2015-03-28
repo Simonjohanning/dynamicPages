@@ -6,8 +6,8 @@
     rex-prefix="'sd: http://symbolicdata.org/Data/Model# cc: http://creativecommons.org/ns# ical: http://www.w3.org/2002/12/cal/ical# dcterms: http://purl.org/dc/terms/ rdfs: http://www.w3.org/2000/01/rdf-schema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
     rex-lookup="true">
 
-	<div ng-repeat="subject in ls.state.items" rex-subject="subject.id">
-
+	<div ng-repeat="subject in confls.state.items" rex-subject="subject.id">
+		{{subject.id}}
 		<!-- conference name -->
 
 		<div class="conferenceTitle" rex-predicate="'rdfs:label'" rex-literal="conferenceTitle">

@@ -3,15 +3,15 @@
     ng-init="data={}; data.baseIri='data:'; data.dists=[]"
     rex-context
     rex-sparql-service="datasetSparqlService"
-    rex-prefix="'sd: http://symbolicdata.org/Data/Model# dcterms: http://purl.org/dc/terms/ rdfs: http://www.w3.org/2000/01/rdf-schema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# bibo:http://purl.org/ontology/bibo/ bibo_degrees: http://purl.org/ontology/bibo/degrees/'"
+    rex-prefix="'sd: http://symbolicdata.org/Data/Model# dcterms: http://purl.org/dc/terms/ rdfs: http://www.w3.org/2000/01/rdf-schema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# bibo: http://purl.org/ontology/bibo/ bibo_degrees: http://purl.org/ontology/bibo/degrees/'"
     rex-lookup="true">
 
 <div ng-repeat="subject in ls.state.items" rex-subject="subject.id">
 		<!-- dissertation title -->
-		{{subject}}
+		{{subject.id}}
 
 		<div class="dissTitle" rex-predicate="'dcterms:title'" rex-literal="dissertationTitle" ng-show="dissertationTitle != null">
-			{{dissertationTitle}}
+			title: {{dissertationTitle}}
 		</div>
 
 		<!-- dissertation author -->
