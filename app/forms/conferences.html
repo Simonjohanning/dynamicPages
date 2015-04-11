@@ -62,7 +62,8 @@
 				Invited speakers:
 			</div>			
 			<ul ng-repeat="speaker in targets" rex-subject="speaker">
-				<li rex-predicate="'foaf:name'" rex-literal="speakerName" ng-hide="speakerName === ''">{{speakerName}}</li>
+				<li rex-predicate="'foaf:name'" rex-literal="speakerName" ng-hide="speakerName === ''">
+				<a href="{{speaker}}">{{speakerName}}</a></li>
 			</ul>
 		</div>
 
@@ -73,7 +74,8 @@
 				Program committee:
 			</div>			
 			<ul ng-repeat="member in targets" rex-subject="member">
-				<li rex-predicate="'foaf:name'" rex-literal="memberName" ng-hide="speakerName === ''">{{memberName}}</li>
+				<li rex-predicate="'foaf:name'" rex-literal="memberName" ng-hide="speakerName === ''">
+				<a href="{{member}}">{{memberName}}</a></li>
 			</ul>
 		</div>
 
@@ -84,7 +86,8 @@
 				Participants:
 			</div>			
 			<ul ng-repeat="participant in targets" rex-subject="participant">
-				<li rex-predicate="'foaf:name'" rex-literal="participantName" ng-hide="speakerName === ''">{{participantName}}</li>
+				<li rex-predicate="'foaf:name'" rex-literal="participantName" ng-hide="speakerName === ''">
+				<a href="{{participant}}">{{participantName}}</a></li>
 			</ul>
 		</div>
 
@@ -93,11 +96,11 @@
 		<div>
 			<span class="contact" rex-predicate="'ical:contact'" rex-literal="contact" ng-show="contact != null" rex-nav-target="target">
 				<span rex-predicate="'foaf:name'" rex-literal="contactPersonName">
-					for more information contact {{contactPersonName}}
+					for more information contact <a href="{{target}}">{{contactPersonName}}</a>
 				</span>
 			</span>
 			<span class="contact" rex-predicate="'ical:url'" rex-literal="contactURL" ng-show="(contact != null) && (contactURL != null)">
-					,or go on {{contactURL}}
+					,or go on <a href="{{contactURL}}">{{contactURL}}</a>
 			</span>
 		</div>	
 
@@ -112,7 +115,9 @@
 					</span>		
 			</span>
 		</div>
-
+		View <a href="{{subject.id}}">resource</a> in <a href="http://symbolicdata.org/casn/"> CASN Ontowiki</a>
+		<br>
+		
 		<!-- End of iteration -->
 		<br>
 	</div>
