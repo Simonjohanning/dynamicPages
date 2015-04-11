@@ -222,15 +222,6 @@
 
         $scope.editCounter = 0;
 
-        $scope.conferenceSparqlService = jassa.service.SparqlServiceBuilder
-            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
-            .create();
-
-		$scope.dissertationSparqlService = jassa.service.SparqlServiceBuilder
-            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/Dissertationen/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
-            .create();
-
-
         dddi.register('sparqlService', ['editCounter', function() {
             var r = jassa.service.SparqlServiceBuilder
                 //.http('http://dbpedia.org/sparql', ['http://dbpedia.org'], {type: 'POST'})
@@ -440,8 +431,11 @@
 			return new jassa.sponate.StoreFacade(sparqlService);
 		}
 
+        $scope.conferenceSparqlService = jassa.service.SparqlServiceBuilder
+            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
+            .create();
 
-		$scope.conferenceStore = init($scope.conferenceSparqlService);
+        $scope.conferenceStore = new jassa.sponate.StoreFacade($scope.conferenceSparqlService);
 
 		$scope.conferenceStore.addMap({
 			name: 'conferences',		
@@ -449,7 +443,12 @@
 			from: '?s a <http://symbolicdata.org/Data/Model#UpcomingConference>'
 		});
 
-		$scope.dissertationStore = init($scope.dissertationSparqlService);
+        $scope.dissertationSparqlService = jassa.service.SparqlServiceBuilder
+            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/Dissertationen/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
+            .create();
+
+        
+		$scope.dissertationStore = new jassa.sponate.StoreFacade($scope.dissertationSparqlService);
 
 		$scope.dissertationStore.addMap({
 			name: 'dissertations',		
@@ -468,7 +467,7 @@
 		var listServiceWatcher = new ListServiceWatcher($scope, $q);
 
 		$scope.confls =  listServiceWatcher.watch('conferenceListService');
-		$scope.dissls =  listServiceWatcher.watch('dissertationsListService');
+		//$scope.dissls =  listServiceWatcher.watch('dissertationsListService');
 
     }]);
 

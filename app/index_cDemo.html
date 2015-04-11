@@ -219,10 +219,6 @@
 
         $scope.editCounter = 0;
 
-        $scope.datasetSparqlService = jassa.service.SparqlServiceBuilder
-            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
-            .create();
-
 
         dddi.register('sparqlService', ['editCounter', function() {
             var r = jassa.service.SparqlServiceBuilder
@@ -426,24 +422,64 @@
 
             return r;
         };
+        /**
+        * Sets up a list service to provide data
+        * @param {string} endpoint specifies the address of the SPARQL-endpoint used to retrieve data from
+        * @param {array} graphs specifies the graphs from which the data is retrieved
+        * @param {object} map A map of the form { name: name, template: [{key: '?var'}], from: 'SPARQL query'}
+        * @param {function} searchFunction A search function (e.g. fnTransformSearch)
+        */
+        var setupListService = function(endpoint, graphs, map, searchFunction){
+            var sparqlService = jassa.service.SparqlServiceBuilder
+                .http(endpoint, graphs, {type: 'POST'})
+                .create();
+            var store = new jassa.sponate.StoreFacade(sparqlService);
+            store.addMap(map);
+            var listService = store[map.name].getListService();
+            listService = new jassa.service.ListServiceTransformConcept(listService, searchFunction);
+            return {
+                'listService' : listService, 
+                'sparqlService' : sparqlService
+            };
+        }
 
-		$scope.store = new jassa.sponate.StoreFacade($scope.datasetSparqlService);
+        var listServiceWatcher = new ListServiceWatcher($scope, $q);
 
-		$scope.store.addMap({
-			name: 'conferences',		
-			template: [{id: '?s'}],
-			from: '?s a <http://symbolicdata.org/Data/Model#UpcomingConference>'
-		});
+        var setupConferences = function(){
+            var conferenceServices = setupListService(
+                'http://symbolicdata.org:8891/sparql', 
+                ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], 
+                {
+                    name: 'conferences',        
+                    template: [{id: '?s'}],
+                    from: '?s a <http://symbolicdata.org/Data/Model#UpcomingConference>'
+                },
+                fnTransformSearch
+            );
+            $scope.conferenceListService = conferenceServices.listService;
+            $scope.conferenceSparqlService = conferenceServices.sparqlService;
+            $scope.confListService =  listServiceWatcher.watch('conferenceListService');
+        }
 
-		$scope.listService = $scope.store.conferences.getListService();
-		
-		//list service mit keyword search wrappen
-        $scope.listService = new jassa.service.ListServiceTransformConcept($scope.listService, fnTransformSearch);
+        var setupDissertations = function(){
+            var dissertationServices = setupListService(
+                'http://symbolicdata.org:8891/sparql', 
+                ['http://symbolicdata.org/casn/Dissertationen/', 'http://symbolicdata.org/Data/People/'],
+                {
+                    name: 'dissertations',      
+                    template: [{id: '?s'}],
+                    from: '?s a <http://purl.org/ontology/bibo/Thesis>'
+                },
+                fnTransformSearch
+            );
+            $scope.dissertationListService = dissertationServices.listService;
+            $scope.dissertationSparqlService = dissertationServices.sparqlService;
+            $scope.dissListService =  listServiceWatcher.watch('dissertationListService');
+        }
 
-		var listServiceWatcher = new ListServiceWatcher($scope, $q);
-
-		$scope.ls =  listServiceWatcher.watch('listService');
-
+        setupDissertations();
+        setupConferences();
+       
     }]);
 
 
@@ -458,7 +494,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div ng-include="'forms/conferences_clausDemo.html'"></div>
+            <tabset justified="true">
+                <tab heading="Dissertations in CA">
+                    <div ng-include="'forms/dissertations.html'"></div>
+                </tab>
+                <tab heading="Announcement of Upcoming Conferences">
+                    <div ng-include="'forms/conferences.html'"></div>
+                </tab>
+            </tabset>
 
         </div>
     </div>
