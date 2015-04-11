@@ -20,9 +20,6 @@
     <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
     <!-- endbower -->
 
-	<link href="css/dynamicPages.css" rel="stylesheet"/>     
-	<link href="css/bootstrap.css" rel="stylesheet"/> 
-
     <!-- endbuild -->
 
     <!-- bower:js -->
@@ -104,9 +101,9 @@
         return r;
     });
     </script>
-<!--
+
     <script src="jassa-ui-angular-edit-tpls-0.9.0-SNAPSHOT.js"></script>
--->
+
 
 
     <script type="text/javascript">
@@ -114,7 +111,7 @@
 
     angular.module(
         'jassa.ui.edit.demo.widgets',
-        ['dddi', 'ngSanitize', 'ui.jassa', 'ui.bootstrap', 'ui.select', 'ui.jassa.edit', 'ui.jassa.rex', 'ui.codemirror', 'ngAnimate'], 		[ '$rootScopeProvider', function($rootScopeProvider) {
+        ['dddi', 'ngSanitize', 'ui.jassa', 'ui.bootstrap', 'ui.select', 'ui.jassa.edit', 'ui.jassa.rex', 'ui.codemirror', 'ngAnimate'],         [ '$rootScopeProvider', function($rootScopeProvider) {
      $rootScopeProvider.digestTtl(50);
 }])
 
@@ -221,6 +218,7 @@
         };
 
         $scope.editCounter = 0;
+
 
         dddi.register('sparqlService', ['editCounter', function() {
             var r = jassa.service.SparqlServiceBuilder
@@ -407,14 +405,13 @@
         $scope.copy = angular.copy;
 
         //showAngularStats();
-	
 
-		var literalPreference = new jassa.sparql.LiteralPreference();
+        var literalPreference = new jassa.sparql.LiteralPreference();
 
-		var fnTransformSearch = function(searchString) {
+        var fnTransformSearch = function(searchString) {
             var r;
             if(searchString) {
-				
+                
                 var relation = jassa.sparql.LabelUtils.createRelationLiteralPreference(literalPreference);
                 // TODO Make it configurable to whether scan URIs too (the true argument)
                 r = jassa.sparql.KeywordSearchUtils.createConceptRegex(relation, searchString, true);
@@ -425,54 +422,68 @@
 
             return r;
         };
+        /**
+        * Sets up a list service to provide data
+        * @param {string} endpoint specifies the address of the SPARQL-endpoint used to retrieve data from
+        * @param {array} graphs specifies the graphs from which the data is retrieved
+        * @param {object} map A map of the form { name: name, template: [{key: '?var'}], from: 'SPARQL query'}
+        * @param {function} searchFunction A search function (e.g. fnTransformSearch)
+        */
+        var setupListService = function(endpoint, graphs, map, searchFunction){
+            var sparqlService = jassa.service.SparqlServiceBuilder
+                .http(endpoint, graphs, {type: 'POST'})
+                .create();
+            var store = new jassa.sponate.StoreFacade(sparqlService);
+            store.addMap(map);
+            var listService = store[map.name].getListService();
+            listService = new jassa.service.ListServiceTransformConcept(listService, searchFunction);
+            return {
+                'listService' : listService, 
+                'sparqlService' : sparqlService
+            };
+        }
 
+        var listServiceWatcher = new ListServiceWatcher($scope, $q);
 
-		var init = function(sparqlService){
-			return new jassa.sponate.StoreFacade(sparqlService);
-		}
+        var setupConferences = function(){
+            var conferenceServices = setupListService(
+                'http://symbolicdata.org:8891/sparql', 
+                ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], 
+                {
+                    name: 'conferences',        
+                    template: [{id: '?s'}],
+                    from: '?s a <http://symbolicdata.org/Data/Model#UpcomingConference>'
+                },
+                fnTransformSearch
+            );
+            $scope.conferenceListService = conferenceServices.listService;
+            $scope.conferenceSparqlService = conferenceServices.sparqlService;
+            $scope.confListService =  listServiceWatcher.watch('conferenceListService');
+        }
 
-        $scope.conferenceSparqlService = jassa.service.SparqlServiceBuilder
-            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/UpcomingConferences/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
-            .create();
+        var setupDissertations = function(){
+            var dissertationServices = setupListService(
+                'http://symbolicdata.org:8891/sparql', 
+                ['http://symbolicdata.org/casn/Dissertationen/', 'http://symbolicdata.org/Data/People/'],
+                {
+                    name: 'dissertations',      
+                    template: [{id: '?s'}],
+                    from: '?s a <http://purl.org/ontology/bibo/Thesis>'
+                },
+                fnTransformSearch
+            );
+            $scope.dissertationListService = dissertationServices.listService;
+            $scope.dissertationSparqlService = dissertationServices.sparqlService;
+            $scope.dissListService =  listServiceWatcher.watch('dissertationListService');
+        }
 
-        $scope.conferenceStore = new jassa.sponate.StoreFacade($scope.conferenceSparqlService);
-
-		$scope.conferenceStore.addMap({
-			name: 'conferences',		
-			template: [{id: '?s'}],
-			from: '?s a <http://symbolicdata.org/Data/Model#UpcomingConference>'
-		});
-
-        $scope.dissertationSparqlService = jassa.service.SparqlServiceBuilder
-            .http('http://symbolicdata.org:8891/sparql', ['http://symbolicdata.org/casn/Dissertationen/', 'http://symbolicdata.org/Data/People/'], {type: 'POST'})
-            .create();
-
-        
-		$scope.dissertationStore = new jassa.sponate.StoreFacade($scope.dissertationSparqlService);
-
-		$scope.dissertationStore.addMap({
-			name: 'dissertations',		
-			template: [{id: '?s'}],
-			from: '?s a <http://purl.org/ontology/bibo/Thesis>'
-		});
-
-
-		$scope.conferenceListService = $scope.conferenceStore.conferences.getListService();
-		$scope.conferenceListService = new jassa.service.ListServiceTransformConcept($scope.conferenceListService, fnTransformSearch);
-
-		$scope.dissertationsListService = $scope.dissertationStore.dissertations.getListService();
-		$scope.dissertationsListService = new jassa.service.ListServiceTransformConcept($scope.dissertationsListService, fnTransformSearch);
-		
-
-		var listServiceWatcher = new ListServiceWatcher($scope, $q);
-
-		$scope.confls =  listServiceWatcher.watch('conferenceListService');
-		//$scope.dissls =  listServiceWatcher.watch('dissertationsListService');
-
+        setupDissertations();
+        setupConferences();
+       
     }]);
 
 
-	
+    
 
 
     </script>
@@ -482,15 +493,17 @@
 <body ng-controller="AppCtrl">
 <div class="container">
     <div class="row">
-       <!-- <div class="col-md-10 col-md-offset-1"> -->
-			<tabset justified="true">
-      			<tab heading="Dissertations in CA">
-            		<div ng-include="'forms/dissertations.html'"></div>
-				</tab>
-      			<tab heading="Announcement of Upcoming Conferences">
-            		<div ng-include="'forms/conferences.html'"></div>
-				</tab>
-			</tabset>
+        <div class="col-md-10 col-md-offset-1">
+            <tabset justified="true">
+                <tab heading="Dissertations in CA">
+                    <div ng-include="'forms/dissertations.html'"></div>
+                </tab>
+                <tab heading="Announcement of Upcoming Conferences">
+                    <div ng-include="'forms/conferences.html'"></div>
+                </tab>
+            </tabset>
+
+        </div>
     </div>
 </div>
 </body>
