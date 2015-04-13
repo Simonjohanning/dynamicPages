@@ -1,9 +1,9 @@
 div{
     text-align: justify;
     padding: 5px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
+    margin-left: 0;
+    margin-right: 0;
+    width: 95%;
 }
 
 div.conferenceTitle, div.dissTitle{
