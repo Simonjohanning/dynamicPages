@@ -6,6 +6,12 @@
     rex-prefix="'sd: http://symbolicdata.org/Data/Model# cc: http://creativecommons.org/ns# ical: http://www.w3.org/2002/12/cal/ical# dcterms: http://purl.org/dc/terms/ rdfs: http://www.w3.org/2000/01/rdf-schema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
     rex-lookup="true">
 
+
+    	Filter conferences:	
+
+    	<input type="text" ng-model="confListService.ctrl.filter.concept" />
+
+
 	<div ng-repeat="subject in confListService.state.items" rex-subject="subject.id">
 
 		<!-- conference name -->
