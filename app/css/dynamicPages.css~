@@ -1,0 +1,32 @@
+div{
+    text-align: justify;
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+div.conferenceTitle, div.dissTitle{
+    font-size: 1.8em;
+}
+
+div.conferenceDates, div.dissDate{
+    font-family: "Courier New", monospace;
+}
+
+div.deadline, div.dissReviewer, div.dissAffiliates, div.dissSupervisor {
+    font-size: 0.9em;
+}
+
+div.dissAuthor, div.location{
+    font-weight: bold;
+}
+
+div.description{
+    font-style: italic;
+}
+
+div.dissAffiliates{
+    color: grey;
+    font-family: "Courier New", monospace;
+}
