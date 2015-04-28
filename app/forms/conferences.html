@@ -46,7 +46,7 @@
 		<!-- deadlines information -->
 
 		<div>
-			<b>Deadlines:</b>	
+			<b ng-show="rexContext.json[subject.id].hasOwnProperty('http://symbolicdata.org/Data/Model#hasPaperDeadline') || rexContext.json[subject.id].hasOwnProperty('http://symbolicdata.org/Data/Model#hasPosterDeadline') || rexContext.json[subject.id].hasOwnProperty('http://symbolicdata.org/Data/Model#hasAbstractsDeadline')">Deadlines:</b>	
 				<div class="deadline" rex-predicate="'sd:hasRegistrationDeadline'" rex-literal="registrationDeadline" ng-show="registrationDeadline != null">
 					register until {{registrationDeadline}}
 				</div>	
@@ -67,10 +67,13 @@
 			<div ng-hide="targets.length < 1">
 				Invited speakers:
 			</div>			
-			<ul ng-repeat="speaker in targets" rex-subject="speaker">
-				<li rex-predicate="'foaf:name'" rex-literal="speakerName" ng-hide="speakerName === ''">
+			<div ng-repeat="speaker in targets" ng-show="rexContext.json[speaker].hasOwnProperty('http://xmlns.com/foaf/0.1/name')">
+				<div rex-subject="speaker"> 
+			<!--	<li rex-predicate="'foaf:name'" rex-literal="speakerName" ng-hide="speakerName === ''"> -->
+		<li rex-predicate="'foaf:name'" rex-literal="speakerName" >
 				<a href="{{speaker}}">{{speakerName}}</a></li>
-			</ul>
+				</div>
+			</div>
 		</div>
 
 		<!-- program committee information -->
@@ -101,7 +104,7 @@
 		
 		<div>
 			<span class="contact" rex-predicate="'ical:contact'" rex-literal="contact" ng-show="contact != null" rex-nav-target="target">
-				<span rex-predicate="'foaf:name'" rex-literal="contactPersonName">
+				<span rex-predicate="'foaf:name'" rex-literal="contactPersonName" ng-show="rexContext.json[target].hasOwnProperty('http://xmlns.com/foaf/0.1/name')">
 					for more information contact <a href="{{target}}">{{contactPersonName}}</a>
 				</span>
 			</span>
